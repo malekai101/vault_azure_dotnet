@@ -25,33 +25,10 @@ namespace Vault_Azure_Dotnet
         const string AccessTokenEndPoint = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/";
 
         /// <summary>
-        /// Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
-        /// This example assumes you have a configured Azure AD Application.
-        /// Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
-        ///
-        /// A role must first be created in Vault bound to the resource groups and subscription ids:
-        ///     vault write auth/azure/role/dev-role \
-        ///     policies="dev-policy"
-        ///     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
-        ///     bound_resource_groups=test-rg \
-        ///     ttl=24h
+        /// Builds a Vault client using the Azure MSI.
         /// </summary>
         public IVaultClient BuildVaultClient(string vaultAddr, string roleName)
         {
-            /*
-            string vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
-            if(String.IsNullOrEmpty(vaultAddr))
-            {
-                throw new System.ArgumentNullException("Vault Address");
-            }
-
-            string roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
-            if(String.IsNullOrEmpty(roleName))
-            {
-                throw new System.ArgumentNullException("Vault Role Name");
-            }
-            */
-
             string jwt = GetJWT();
             InstanceMetadata metadata = GetMetadata();
 
@@ -60,16 +37,6 @@ namespace Vault_Azure_Dotnet
 
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
             return vaultClient;
-
-            /*
-            // We can retrieve the secret from the VaultClient object
-            Secret<SecretData> kv2Secret = null;
-            kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
-
-            var password = kv2Secret.Data.Data["password"];
-
-            return password.ToString();
-            */
         }
 
         /// <summary>
