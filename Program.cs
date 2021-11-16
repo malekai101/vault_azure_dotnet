@@ -37,9 +37,9 @@ namespace Vault_Azure_Dotnet
             Console.WriteLine("The vault client has successfully logged in.");
             
             Secret<SecretData> kv2Secret = null;
-            kv2Secret = vault_client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "alpha", mountPoint: "kv_auto").Result;
+            kv2Secret = vault_client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "funcdata", mountPoint: "kv_func").Result;
 
-            var password = kv2Secret.Data.Data["wisdom"];
+            var password = kv2Secret.Data.Data["universe"];
 
             Console.WriteLine(password.ToString());
         }
