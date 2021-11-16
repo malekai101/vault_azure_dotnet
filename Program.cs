@@ -16,10 +16,25 @@ namespace Vault_Azure_Dotnet
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Beginning run.");
+            string vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("Vault Address", 
+                    message: "The VAULT_ADDR environmental variable must be set.");
+            }
+
+            string roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
+            if(String.IsNullOrEmpty(roleName))
+            {
+                throw new System.ArgumentNullException("Vault Role Name",
+                    message: "The VAULT_ROLE environmental variable must be set.");
+            }
+            
             AzureAuth clientFactory = new AzureAuth();
-            IVaultClient vault_client = clientFactory.BuildVaultClient(Environment.GetEnvironmentVariable("VAULT_ADDR"), 
-                Environment.GetEnvironmentVariable("VAULT_ROLE"));
+            IVaultClient vault_client = clientFactory.BuildVaultClient(vaultAddr, roleName);
+            vault_client.V1.Auth.PerformImmediateLogin();
+            Console.WriteLine("The vault client has successfully logged in.");
             
             Secret<SecretData> kv2Secret = null;
             kv2Secret = vault_client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "alpha", mountPoint: "kv_auto").Result;
