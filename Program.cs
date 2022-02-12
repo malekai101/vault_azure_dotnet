@@ -66,7 +66,6 @@ namespace Vault_Azure_Dotnet
             {
                 Console.Write("Certificate generation failed.");
                 Console.WriteLine(e);
-                throw;
             }
         }
     }
