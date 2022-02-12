@@ -45,7 +45,7 @@ namespace Vault_Azure_Dotnet
 
             const string pkiRoleName = "app";
             var certificateCredentialsRequestOptions = new CertificateCredentialsRequestOptions();
-            certificateCredentialsRequestOptions.CommonName = "alpha";
+            certificateCredentialsRequestOptions.CommonName = "alpha.acme-app.com";
             //Secret<CertificateCredentials> certSecret = null;
             try
             {
