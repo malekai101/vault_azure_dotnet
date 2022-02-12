@@ -37,16 +37,24 @@ namespace Vault_Azure_Dotnet
             vault_client.V1.Auth.PerformImmediateLogin();
             Console.WriteLine("The vault client has successfully logged in.");
             
+            /*
             Secret<SecretData> kv2Secret = null;
             kv2Secret = vault_client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "funcdata", mountPoint: "kv_func").Result;
 
             var password = kv2Secret.Data.Data["universe"];
             Console.WriteLine(password.ToString());
+            */
+            
+            string certCommonName = Environment.GetEnvironmentVariable("VAULT_COMMON_NAME");
+            if(String.IsNullOrEmpty(roleName))
+            {
+                Console.WriteLine("The VAULT_COMMON_NAME variable is not set.  Using alpha.");
+                certCommonName = "alpha";
+            }
 
             const string pkiRoleName = "app";
             var certificateCredentialsRequestOptions = new CertificateCredentialsRequestOptions();
-            certificateCredentialsRequestOptions.CommonName = "alpha.acme-app.com";
-            //Secret<CertificateCredentials> certSecret = null;
+            certificateCredentialsRequestOptions.CommonName = $"{certCommonName}.acme-app.com";
             try
             {
                 var certSecret = vault_client.V1.Secrets.PKI.GetCredentialsAsync(pkiRoleName, certificateCredentialsRequestOptions);
