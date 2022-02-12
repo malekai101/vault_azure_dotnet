@@ -46,7 +46,7 @@ namespace Vault_Azure_Dotnet
             */
             
             string certCommonName = Environment.GetEnvironmentVariable("VAULT_COMMON_NAME");
-            if(String.IsNullOrEmpty(roleName))
+            if(String.IsNullOrEmpty(certCommonName))
             {
                 Console.WriteLine("The VAULT_COMMON_NAME variable is not set.  Using alpha.");
                 certCommonName = "alpha";
