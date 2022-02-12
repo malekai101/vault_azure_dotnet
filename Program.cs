@@ -9,6 +9,7 @@ using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Azure;
 using VaultSharp.V1.Commons;
+using VaultSharp.V1.SecretsEngines.PKI;
 
 namespace Vault_Azure_Dotnet
 {
@@ -40,8 +41,25 @@ namespace Vault_Azure_Dotnet
             kv2Secret = vault_client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "funcdata", mountPoint: "kv_func").Result;
 
             var password = kv2Secret.Data.Data["universe"];
-
             Console.WriteLine(password.ToString());
+
+            const string pkiRoleName = "app";
+            var certificateCredentialsRequestOptions = new CertificateCredentialsRequestOptions();
+            certificateCredentialsRequestOptions.CommonName = "alpha";
+            //Secret<CertificateCredentials> certSecret = null;
+            try
+            {
+                var certSecret = vault_client.V1.Secrets.PKI.GetCredentialsAsync(pkiRoleName, certificateCredentialsRequestOptions);
+                string privateKeyContent = certSecret.Result.Data.CertificateContent;
+                Console.Write("Certificate content:");
+                Console.WriteLine(privateKeyContent);
+            }
+            catch (Exception e)
+            {
+                Console.Write("Certificate generation failed.");
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
